@@ -1,0 +1,285 @@
+[
+  {
+    "id": "leaflet-001",
+    "condition_name": "Leaflet Damage",
+    "category": "symptom",
+    "causal_agents": [
+      "mechanical damage",
+      "chewing insects"
+    ],
+    "recommendation_summary": "Damage appears as notches, holes or brown streaks on leaflets. Remove heavily damaged material and treat underlying pest or cultural causes.",
+    "recommendations": [
+      {
+        "type": "monitoring",
+        "treatment_name": "Regular inspection and removal",
+        "dosage": null,
+        "frequency": "weekly",
+        "notes": "Inspect fronds early morning; remove and destroy heavily damaged leaflets."
+      },
+      {
+        "type": "organic",
+        "treatment_name": "Neem oil 0.5%",
+        "dosage": {
+          "amount": 5,
+          "unit": "ml",
+          "per": "L water"
+        },
+        "frequency": "Repeat every 10-14 days as needed",
+        "notes": "Spray thoroughly on underside of leaflets."
+      },
+      {
+        "type": "chemical",
+        "treatment_name": "Quinalphos 25 EC",
+        "dosage": {
+          "amount": 1,
+          "unit": "ml",
+          "per": "L water"
+        },
+        "frequency": "Apply when threshold exceeded; max 2 applications",
+        "notes": "Follow label directions and safety precautions."
+      }
+    ],
+    "tags": [
+      "leaflet",
+      "damage",
+      "insect",
+      "neem",
+      "quinalphos"
+    ],
+    "application_triggers": [
+      "visible chewing damage on new fronds",
+      "pest counts above threshold"
+    ],
+    "application_constraints": [
+      "observe pre-harvest intervals",
+      "use PPE"
+    ],
+    "source_document": "Coconut Leaf Recomendations.txt",
+    "source_id": "CLRT-LEAFLET-01"
+  },
+  {
+    "id": "caterpillar-001",
+    "condition_name": "Caterpillar Infestation",
+    "category": "pest",
+    "causal_agents": [
+      "lepidopteran larvae (caterpillars)"
+    ],
+    "recommendation_summary": "Caterpillars chew leaflets and bore into crowns; control using Bt, selective insecticides or cultural removal.",
+    "recommendations": [
+      {
+        "type": "biological",
+        "treatment_name": "Bacillus thuringiensis (Bt)",
+        "dosage": {
+          "amount": 2,
+          "unit": "g",
+          "per": "L water"
+        },
+        "frequency": "Apply at first signs; repeat 7-10 days",
+        "notes": "Effective on young larvae."
+      },
+      {
+        "type": "chemical",
+        "treatment_name": "Emamectin benzoate (5% SG)",
+        "dosage": {
+          "amount": 0.5,
+          "unit": "g",
+          "per": "L water"
+        },
+        "frequency": "As needed",
+        "notes": "Follow label rates."
+      },
+      {
+        "type": "chemical",
+        "treatment_name": "Chlorantraniliprole",
+        "dosage": {
+          "amount": 0.3,
+          "unit": "g",
+          "per": "L water"
+        },
+        "frequency": "As needed",
+        "notes": "Rotate modes of action to reduce resistance."
+      }
+    ],
+    "tags": [
+      "caterpillar",
+      "larvae",
+      "bt",
+      "emamectin"
+    ],
+    "application_triggers": [
+      "active feeding observed",
+      "early-instar larvae present"
+    ],
+    "application_constraints": [
+      "avoid broad-spectrum insecticides during pollinator activity"
+    ],
+    "source_document": "Coconut Leaf Recomendations.txt",
+    "source_id": "CLRT-CATERP-01"
+  },
+  {
+    "id": "yellowing-001",
+    "condition_name": "Yellowing of Leaflets",
+    "category": "nutrition_symptom",
+    "causal_agents": [
+      "nutrient deficiency (N, Mg, Zn)",
+      "water stress"
+    ],
+    "recommendation_summary": "Interveinal yellowing or generalized chlorosis often indicates nutrient deficiency or poor root function; correct with appropriate fertilization and improve water management.",
+    "recommendations": [
+      {
+        "type": "diagnostic",
+        "treatment_name": "Leaf tissue and soil test",
+        "dosage": null,
+        "frequency": "One-time as recommended",
+        "notes": "Confirm deficiency before applying nutrients."
+      },
+      {
+        "type": "fertilizer",
+        "treatment_name": "Nitrogen (Urea)",
+        "dosage": {
+          "amount": 250,
+          "unit": "g",
+          "per": "palm per application"
+        },
+        "frequency": "2-3 times per year",
+        "notes": "Adjust rate based on soil test."
+      },
+      {
+        "type": "micronutrient",
+        "treatment_name": "Zinc sulphate (ZnSO4)",
+        "dosage": {
+          "amount": 50,
+          "unit": "g",
+          "per": "palm"
+        },
+        "frequency": "Apply once and reassess",
+        "notes": "Foliar zinc sprays may be used for rapid correction."
+      }
+    ],
+    "tags": [
+      "yellowing",
+      "chlorosis",
+      "nutrition",
+      "fertilizer"
+    ],
+    "application_triggers": [
+      "generalized yellowing",
+      "confirmed deficiency by test"
+    ],
+    "application_constraints": [
+      "do not exceed recommended rates; consider soil pH"
+    ],
+    "source_document": "Coconut Leaf Recomendations.txt",
+    "source_id": "CLRT-YELLOW-01"
+  },
+  {
+    "id": "drying-001",
+    "condition_name": "Drying and Browning of Leaflets",
+    "category": "physiological_symptom",
+    "causal_agents": [
+      "drought stress",
+      "salinity",
+      "disease"
+    ],
+    "recommendation_summary": "Drying of leaflet tips or margins can be due to water stress, salinity or nutrient imbalances; prioritize irrigation, correct nutrition and manage pathogens where present.",
+    "recommendations": [
+      {
+        "type": "water_management",
+        "treatment_name": "Improve irrigation and drainage",
+        "dosage": null,
+        "frequency": "ongoing",
+        "notes": "Provide supplemental irrigation during dry spells; ensure proper drainage."
+      },
+      {
+        "type": "fertilizer",
+        "treatment_name": "Balanced NPK application",
+        "dosage": {
+          "amount": 500,
+          "unit": "g",
+          "per": "palm per year"
+        },
+        "frequency": "Split into 2-3 applications per year",
+        "notes": "Adjust based on soil test."
+      },
+      {
+        "type": "organic",
+        "treatment_name": "Compost/organic matter",
+        "dosage": {
+          "amount": 10,
+          "unit": "kg",
+          "per": "palm"
+        },
+        "frequency": "annually",
+        "notes": "Improves soil moisture retention."
+      }
+    ],
+    "tags": [
+      "drying",
+      "leaflet",
+      "water",
+      "fertilizer"
+    ],
+    "application_triggers": [
+      "browning at margins",
+      "reduced turgor"
+    ],
+    "application_constraints": [
+      "investigate root health before intensive fertilization"
+    ],
+    "source_document": "Coconut Leaf Recomendations.txt",
+    "source_id": "CLRT-DRY-01"
+  },
+  {
+    "id": "flaccidity-001",
+    "condition_name": "Flaccidity (Wilting) of Leaflets",
+    "category": "physiological_symptom",
+    "causal_agents": [
+      "water stress",
+      "root rot",
+      "potassium deficiency"
+    ],
+    "recommendation_summary": "Flaccid or limp leaflets usually reflect water stress, root problems or nutrient deficiencies; restore irrigation, check roots and apply potassium if needed.",
+    "recommendations": [
+      {
+        "type": "irrigation",
+        "treatment_name": "Provide consistent soil moisture",
+        "dosage": null,
+        "frequency": "as needed",
+        "notes": "Avoid prolonged waterlogging; maintain even moisture."
+      },
+      {
+        "type": "fertilizer",
+        "treatment_name": "Muriate of Potash (KCl)",
+        "dosage": {
+          "amount": 250,
+          "unit": "g",
+          "per": "palm per application"
+        },
+        "frequency": "2-3 times per year",
+        "notes": "Follow soil test recommendations."
+      },
+      {
+        "type": "disease_management",
+        "treatment_name": "Root health assessment and treatment",
+        "dosage": null,
+        "frequency": "one-time/as required",
+        "notes": "If root rot is present, improve drainage and consider approved fungicidal treatments."
+      }
+    ],
+    "tags": [
+      "flaccidity",
+      "wilting",
+      "potassium",
+      "irrigation"
+    ],
+    "application_triggers": [
+      "wilting during daytime",
+      "reduced leaf turgor"
+    ],
+    "application_constraints": [
+      "confirm water or nutrient cause before chemical treatment"
+    ],
+    "source_document": "Coconut Leaf Recomendations.txt",
+    "source_id": "CLRT-FLAC-01"
+  }
+]

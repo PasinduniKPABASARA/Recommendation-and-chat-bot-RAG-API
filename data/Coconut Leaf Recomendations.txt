@@ -1,0 +1,167 @@
+# Coconut Leaf Pest-related Disease Knowledge Base
+# Covering 5 categories: Leaflet Damage, Caterpillar Infestation, Yellowing, Drying, Flaccidity
+
+==================================================
+DISEASE: Leaflet Damage
+--------------------------------------------------
+Symptoms:
+- Brown streaks, cuts, or notches on leaflets.
+- Caused mainly by beetles, grasshoppers, or minor chewing pests.
+- Affects young fronds more severely.
+
+Chemical Pesticide Recommendations:
+- Neem-based formulations (Azadirachtin 0.15%) at 5 ml/L water, sprayed in the evening.
+- In severe beetle damage: Quinalphos 25 EC @ 2 ml/L water, applied as spot spray.
+- If grasshopper outbreak: Malathion 50 EC @ 2 ml/L water.
+
+Fertilizer Recommendations:
+- Organic manure: 25–30 kg well-decomposed compost or farmyard manure per tree annually.
+- NPK (per year per adult palm): 500 g Urea + 700 g MOP + 250 g TSP (in split doses).
+- Foliar spray of micronutrients (Zn, Mg) for damaged fronds.
+
+Homemade / Organic Practices:
+- Spray neem oil solution (30 ml neem oil + 5 g soap in 1 L water).
+- Apply cow dung slurry around palm base for soil health.
+- Ash-water spray (100 g wood ash boiled in 2 L water, cooled, filtered, and sprayed) to deter minor insects.
+
+Preventive / Cultural Practices:
+- Maintain field sanitation (remove weeds and debris).
+- Encourage natural predators (ladybird beetles, spiders).
+- Avoid overcrowding of palms to reduce insect breeding.
+
+Safety Notes:
+- Always spray pesticides during evening hours.
+- Rotate chemical groups to avoid resistance buildup.
+
+==================================================
+DISEASE: Caterpillar Infestation
+--------------------------------------------------
+Symptoms:
+- Irregular holes on leaflets, with greenish-black droppings (frass).
+- Caterpillars feed at night; severe damage reduces photosynthesis.
+
+Chemical Pesticide Recommendations:
+- Emamectin Benzoate 5% SG @ 4 g/10 L water.
+- Chlorantraniliprole 18.5% SC @ 0.3 ml/L water.
+- For large infestations: Lambda-cyhalothrin 5% EC @ 1 ml/L water.
+
+Biological Control:
+- Bacillus thuringiensis (Bt) @ 1 g/L water, sprayed on young fronds.
+- Release egg parasitoid *Trichogramma chilonis* (50,000/acre).
+
+Fertilizer Recommendations:
+- Apply NPK balance: 500 g Urea + 1 kg MOP/tree/year.
+- Foliar spray of 1% potassium nitrate to strengthen leaf tissue.
+- Vermicompost (10 kg/tree/year) improves tree resistance.
+
+Homemade / Organic Practices:
+- Light trap at night to attract and kill adult moths.
+- Spray garlic-chili extract (50 g garlic + 50 g chili paste in 1 L water, fermented 24 hrs, diluted 1:10) on infested leaves.
+- Coconut oil + soap spray (10 ml oil + 5 g soap in 1 L water) suffocates caterpillars.
+
+Preventive / Cultural Practices:
+- Remove and burn severely infested fronds.
+- Monitor at night with torchlight to catch early infestations.
+- Encourage birds (mynahs, king crows) as natural predators.
+
+Safety Notes:
+- Avoid spraying Bt in strong sunlight (best applied in evening).
+- Follow label instructions for chemical pesticides.
+
+==================================================
+DISEASE: Yellowing
+--------------------------------------------------
+Symptoms:
+- Older leaves turn yellow from tips to base.
+- May be due to nutrient deficiency, poor drainage, or pest pressure.
+- Prolonged yellowing reduces nut yield.
+
+Fertilizer Recommendations:
+- Apply Muriate of Potash (MOP) 1 kg/tree/year in 2–3 splits.
+- Magnesium Sulphate 500 g/tree/year if magnesium deficiency is present.
+- Foliar spray: 2% urea + 1% MgSO4 during visible yellowing.
+- Organic manure: 25–30 kg compost/tree/year.
+
+Pesticide / Soil Amendment (if pest-related):
+- If yellowing due to root grubs: Apply Chlorpyriphos 20 EC @ 5 ml/L as soil drench.
+- Neem cake @ 2 kg/tree mixed in soil to suppress grubs and enrich nutrients.
+
+Homemade / Organic Practices:
+- Banana pseudostem mulch around root zone to improve soil potassium.
+- Fermented cow urine solution (1 L fermented cow urine + 9 L water) foliar sprayed to boost nutrient uptake.
+- Wood ash (rich in potash) sprinkled near roots.
+
+Preventive / Cultural Practices:
+- Maintain good drainage, avoid waterlogging.
+- Intercrop with legumes to enrich soil nitrogen.
+- Mulch with green leaves and coconut husks to conserve moisture.
+
+Safety Notes:
+- Avoid over-fertilization; excess salts can worsen yellowing.
+- Always apply fertilizers 0.5–1 m away from the trunk in circular basins.
+
+==================================================
+DISEASE: Drying of Leaflets
+--------------------------------------------------
+Symptoms:
+- Leaf tip browning progressing towards midrib.
+- In severe cases, entire leaflet dries and withers.
+- Often linked to mite infestation, drought, or potassium deficiency.
+
+Chemical Pesticide Recommendations:
+- Dicofol 18.5% EC @ 5 ml/L water for mite management.
+- Propargite 57 EC @ 2 ml/L as alternative acaricide.
+- For persistent cases: Wettable Sulphur 80 WP @ 2 g/L water.
+
+Fertilizer Recommendations:
+- Apply 1 kg MOP/tree/year in 2–3 splits.
+- Foliar spray: 1% KNO3 solution twice in 15-day interval.
+- Add 30 kg organic manure + 500 g bone meal/tree annually.
+
+Homemade / Organic Practices:
+- Spray soap solution (10 g detergent in 1 L water) to suppress mites.
+- Apply diluted buttermilk (200 ml in 10 L water) on leaf surface to reduce drying.
+- Mulch with coconut husk to retain soil moisture.
+
+Preventive / Cultural Practices:
+- Irrigate regularly in dry season.
+- Maintain soil moisture with mulching.
+- Rotate acaricides to prevent resistance.
+
+Safety Notes:
+- Avoid overuse of acaricides; follow a rotation schedule.
+- Do not spray sulphur in very hot conditions (>32°C).
+
+==================================================
+DISEASE: Flaccidity
+--------------------------------------------------
+Symptoms:
+- Leaves become soft, droop downward, lose turgidity.
+- Caused by root stress, nematode damage, or waterlogging.
+- Reduces nutrient absorption and weakens palm.
+
+Chemical / Soil Pesticide Recommendations:
+- Apply Carbofuran granules 3G @ 1 kg/tree in soil around root zone (use caution).
+- For nematode infestation: Neem cake @ 2 kg/tree + Paecilomyces lilacinus (biocontrol fungus).
+- Drench soil with Carbendazim 0.1% if fungal root rot suspected.
+
+Fertilizer Recommendations:
+- Apply 20–25 kg Farm Yard Manure (FYM)/tree annually.
+- NPK recommendation: 500 g Urea + 1 kg MOP + 500 g TSP/tree/year.
+- Foliar spray of 2% urea for quick nitrogen uptake.
+
+Homemade / Organic Practices:
+- Apply compost tea (vermicompost soaked in water for 2 days, filtered, sprayed) for soil health.
+- Use turmeric powder + cow urine solution (20 g turmeric in 1 L cow urine + 9 L water, root drench) for root-strengthening.
+- Mulch with banana leaves or straw to conserve moisture.
+
+Preventive / Cultural Practices:
+- Improve field drainage to avoid water stagnation.
+- Avoid continuous monocropping; intercrop with legumes.
+- Regular soil loosening around root zone for aeration.
+
+Safety Notes:
+- Carbofuran is toxic – handle with gloves, avoid exposure.
+- Prefer bio-nematicides where possible for sustainability.
+
+==================================================
