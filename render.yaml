@@ -1,0 +1,10 @@
+services:
+  - type: web
+    name: coconut-rag
+    runtime: python
+    plan: starter
+    buildCommand: pip install -r requirements.txt
+    startCommand: ./start.sh
+    envVars:
+      - key: GEMINI_API_KEY
+        sync: false
