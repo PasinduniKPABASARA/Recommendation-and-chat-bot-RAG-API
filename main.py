@@ -9,6 +9,8 @@ from langchain.schema.output_parser import StrOutputParser
 import os
 from dotenv import load_dotenv
 
+from contextlib import asynccontextmanager
+
 # --- 1. INITIALIZATION ---
 # Load environment variables
 load_dotenv()
@@ -17,80 +19,96 @@ GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
 if not GEMINI_API_KEY:
     raise ValueError("Gemini API Key not found. Please set it in the.env file.")
 
+# Global variables for models
+embeddings = None
+llm = None
+vector_store = None
+retriever = None
+rag_chain = None
+chat_chain = None
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    # Load models and vector store on startup
+    global embeddings, llm, vector_store, retriever, rag_chain, chat_chain
+    try:
+        print("Loading models and vector store...")
+        embeddings = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
+        llm = ChatGoogleGenerativeAI(model="gemini-2.5-pro", google_api_key=GEMINI_API_KEY, temperature=0.2, convert_system_message_to_human=True)
+        
+        # Load the vector store
+        vector_store = FAISS.load_local("faiss_index", embeddings, allow_dangerous_deserialization=True)
+        retriever = vector_store.as_retriever(search_kwargs={"k": 5}) # Retrieve top 5 results
+        
+        # Create the prompt template
+        template = """
+        You are an expert agricultural assistant specializing in coconut palm pests and diseases.
+        Your task is to provide a comprehensive and actionable recommendation for the user's query based ONLY on the following context.
+        Structure your answer clearly. If there are chemical, organic, and cultural practices, list them under separate headings.
+        If the information is not in the context, state that you do not have specific recommendations for that issue based on the provided data.
+        Do not make up information.
+
+        CONTEXT:
+        {context}
+
+        QUESTION:
+        {question}
+
+        ANSWER:
+        """
+        prompt = PromptTemplate.from_template(template)
+
+        # Create the RAG chain
+        rag_chain = (
+            {"context": retriever, "question": RunnablePassthrough()}
+            | prompt
+            | llm
+            | StrOutputParser()
+        )
+
+        # --- Coco Chat (general conversational endpoint) ---
+        # Chat prompt for Coco Chat (general farmers' questions)
+        chat_template = """
+        You are Coco Chat, an expert and friendly agricultural assistant for smallholder coconut farmers.
+        Answer the user's question concisely and helpfully using plain language. If the question asks for a
+        recommendation and you can use the knowledge base for grounding, say so and provide actionable steps.
+        If the information is not available in the knowledge base, be honest and provide general best-practice guidance
+        or ask for clarification. Keep answers practical and safe.
+
+        User: {message}
+
+        Assistant:
+        """
+        chat_prompt = PromptTemplate.from_template(chat_template)
+
+        # Chat chain for direct conversation (no retrieval)
+        chat_chain = (
+            {"message": RunnablePassthrough()}
+            | chat_prompt
+            | llm
+            | StrOutputParser()
+        )
+        
+        print("Models and vector store loaded successfully.")
+    except Exception as e:
+        print(f"Error loading models or vector store: {e}")
+        # Don't exit here, let the app start but maybe fail requests
+        
+    yield
+    # Clean up resources if needed
+    print("Shutting down...")
+
 # Initialize FastAPI app
 app = FastAPI(
     title="Coconut Disease RAG API",
     description="An API to get recommendations for coconut diseases using a RAG system with Gemini.",
-    version="1.0.0"
+    version="1.0.0",
+    lifespan=lifespan
 )
 
 # Pydantic model for request body validation
 class QueryRequest(BaseModel):
     disease: str
-
-# --- 2. RAG CHAIN SETUP ---
-# This section is loaded once when the application starts
-try:
-    print("Loading models and vector store...")
-    embeddings = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
-    llm = ChatGoogleGenerativeAI(model="gemini-2.5-pro", google_api_key=GEMINI_API_KEY, temperature=0.2, convert_system_message_to_human=True)
-    
-    # Load the vector store
-    vector_store = FAISS.load_local("faiss_index", embeddings, allow_dangerous_deserialization=True)
-    retriever = vector_store.as_retriever(search_kwargs={"k": 5}) # Retrieve top 5 results
-    print("Models and vector store loaded successfully.")
-except Exception as e:
-    print(f"Error loading models or vector store: {e}")
-    exit()
-
-# Create the prompt template
-template = """
-You are an expert agricultural assistant specializing in coconut palm pests and diseases.
-Your task is to provide a comprehensive and actionable recommendation for the user's query based ONLY on the following context.
-Structure your answer clearly. If there are chemical, organic, and cultural practices, list them under separate headings.
-If the information is not in the context, state that you do not have specific recommendations for that issue based on the provided data.
-Do not make up information.
-
-CONTEXT:
-{context}
-
-QUESTION:
-{question}
-
-ANSWER:
-"""
-prompt = PromptTemplate.from_template(template)
-
-# Create the RAG chain
-rag_chain = (
-    {"context": retriever, "question": RunnablePassthrough()}
-    | prompt
-    | llm
-    | StrOutputParser()
-)
-
-# --- Coco Chat (general conversational endpoint) ---
-# Chat prompt for Coco Chat (general farmers' questions)
-chat_template = """
-You are Coco Chat, an expert and friendly agricultural assistant for smallholder coconut farmers.
-Answer the user's question concisely and helpfully using plain language. If the question asks for a
-recommendation and you can use the knowledge base for grounding, say so and provide actionable steps.
-If the information is not available in the knowledge base, be honest and provide general best-practice guidance
-or ask for clarification. Keep answers practical and safe.
-
-User: {message}
-
-Assistant:
-"""
-chat_prompt = PromptTemplate.from_template(chat_template)
-
-# Chat chain for direct conversation (no retrieval)
-chat_chain = (
-    {"message": RunnablePassthrough()}
-    | chat_prompt
-    | llm
-    | StrOutputParser()
-)
 
 # Pydantic model for chat requests
 class ChatRequest(BaseModel):
@@ -160,5 +178,3 @@ async def coco_chat(request: ChatRequest):
 @app.get("/")
 def read_root():
     return {"status": "API is running"}
-
-   
