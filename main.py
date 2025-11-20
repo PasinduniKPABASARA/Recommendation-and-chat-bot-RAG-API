@@ -179,3 +179,19 @@ async def coco_chat(request: ChatRequest):
 def read_root():
     return {"status": "API is running"}
 
+# Add this at the very bottom of your main.py file
+if _name_ == "_main_":
+    import uvicorn
+    import sys
+    
+    # Get port from environment - Render ALWAYS provides this
+    port = os.environ.get("PORT")
+    
+    if port is None:
+        print("Warning: PORT environment variable not set. Using 8000 for local development.")
+        port = 8000
+    else:
+        port = int(port)
+        print(f"Starting server on Render-assigned port: {port}")
+    
+    uvicorn.run(app, host="0.0.0.0", port=port)
