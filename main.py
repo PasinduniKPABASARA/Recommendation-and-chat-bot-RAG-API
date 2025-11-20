@@ -178,3 +178,11 @@ async def coco_chat(request: ChatRequest):
 @app.get("/")
 def read_root():
     return {"status": "API is running"}
+
+# Run with: python main.py (or use uvicorn main:app)
+if __name__ == "__main__":
+    import uvicorn
+    port = int(os.environ.get("PORT", 8000))
+    print(f"\n🚀 Starting Coconut RAG API on http://0.0.0.0:{port}")
+    print(f"📚 Interactive Docs: http://localhost:{port}/docs\n")
+    uvicorn.run(app, host="0.0.0.0", port=port)
