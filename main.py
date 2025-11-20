@@ -179,7 +179,3 @@ async def coco_chat(request: ChatRequest):
 def read_root():
     return {"status": "API is running"}
 
-if _name_ == "_main_":
-    import uvicorn
-    port = int(os.environ.get("PORT"))
-    uvicorn.run(app, host="0.0.0.0", port=port)
