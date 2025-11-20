@@ -179,14 +179,14 @@ async def coco_chat(request: ChatRequest):
 def read_root():
     return {"status": "API is running"}
 
-if__name__ == "__main__":
+if __name__ == "__main__":
     import uvicorn
     import os
 
     port = os.environ.get("PORT")
     if port is None:
-        print("warning:PORT environment variable not set. Using 8000 for local development.")
-        port  = 8000
+        print("Warning: PORT environment variable not set. Using 8000 for local development.")
+        port = 8000
     else:
         port = int(port)
         print(f"Starting server on port: {port}")
