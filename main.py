@@ -1,24 +1,24 @@
 from fastapi import FastAPI, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from langchain_huggingface import HuggingFaceEmbeddings
-from langchain_google_genai import ChatGoogleGenerativeAI
+from langchain_google_genai import GoogleGenerativeAI, ChatGoogleGenerativeAI
 from langchain_community.vectorstores import FAISS
 from langchain.prompts import PromptTemplate
 from langchain.schema.runnable import RunnablePassthrough
 from langchain.schema.output_parser import StrOutputParser
-from dotenv import load_dotenv
 import os
+from dotenv import load_dotenv
 
+from contextlib import asynccontextmanager
 
 # --- 1. INITIALIZATION ---
-
-# Load environment variables (.env locally; on Render, use Dashboard env vars)
+# Load environment variables
 load_dotenv()
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
 
 if not GEMINI_API_KEY:
-    raise ValueError("Gemini API Key not found. Please set GEMINI_API_KEY in the environment.")
-
+    raise ValueError("Gemini API Key not found. Please set it in the.env file.")
 
 # Global variables for models
 embeddings = None
@@ -28,120 +28,126 @@ retriever = None
 rag_chain = None
 chat_chain = None
 
-
-def ensure_models_loaded():
-    """
-    Lazy-load embeddings, LLM, vector store and chains.
-    Only actually loads them once; later calls reuse globals.
-    """
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    # Load models and vector store on startup
     global embeddings, llm, vector_store, retriever, rag_chain, chat_chain
-
-    if rag_chain is not None and chat_chain is not None:
-        return  # already loaded
-
-    print("Loading models and vector store lazily...")
-
-    # 1. Embeddings
-    if embeddings is None:
+    try:
+        print("Loading models and vector store...")
         embeddings = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
+        llm = ChatGoogleGenerativeAI(model="gemini-2.5-pro", google_api_key=GEMINI_API_KEY, temperature=0.2, convert_system_message_to_human=True)
+        
+        # Load the vector store
+        vector_store = FAISS.load_local("faiss_index", embeddings, allow_dangerous_deserialization=True)
+        retriever = vector_store.as_retriever(search_kwargs={"k": 5}) # Retrieve top 5 results
+        
+        # Create the prompt template
+        template = """
+        You are an expert agricultural assistant specializing in coconut palm pests and diseases.
+        Your task is to provide a comprehensive and actionable recommendation for the user's query based ONLY on the following context.
+        Structure your answer clearly. If there are chemical, organic, and cultural practices, list them under separate headings.
+        If the information is not in the context, state that you do not have specific recommendations for that issue based on the provided data.
+        Do not make up information.
 
-    # 2. LLM
-    if llm is None:
-        llm = ChatGoogleGenerativeAI(
-            model="gemini-2.5-pro",
-            google_api_key=GEMINI_API_KEY,
-            temperature=0.2,
-            convert_system_message_to_human=True,
+        CONTEXT:
+        {context}
+
+        QUESTION:
+        {question}
+
+        ANSWER:
+        """
+        prompt = PromptTemplate.from_template(template)
+
+        # Create the RAG chain
+        rag_chain = (
+            {"context": retriever, "question": RunnablePassthrough()}
+            | prompt
+            | llm
+            | StrOutputParser()
         )
 
-    # 3. Vector store + retriever
-    if vector_store is None:
-        # Make sure the 'faiss_index' directory is in your repo
-        # (it should contain the FAISS index files created offline)
-        local_path = "faiss_index"
-        if not os.path.exists(local_path):
-            raise RuntimeError(f"FAISS index directory not found at: {local_path}")
-        vs = FAISS.load_local(
-            local_path,
-            embeddings,
-            allow_dangerous_deserialization=True,
+        # --- Coco Chat (general conversational endpoint) ---
+        # Chat prompt for Coco Chat (general farmers' questions)
+        chat_template = """
+        You are Coco Chat, an expert and friendly agricultural assistant for smallholder coconut farmers.
+        Answer the user's question concisely and helpfully using plain language. If the question asks for a
+        recommendation and you can use the knowledge base for grounding, say so and provide actionable steps.
+        If the information is not available in the knowledge base, be honest and provide general best-practice guidance
+        or ask for clarification. Keep answers practical and safe.
+
+        User: {message}
+
+        Assistant:
+        """
+        chat_prompt = PromptTemplate.from_template(chat_template)
+
+        # Chat chain for direct conversation (no retrieval)
+        chat_chain = (
+            {"message": RunnablePassthrough()}
+            | chat_prompt
+            | llm
+            | StrOutputParser()
         )
-        globals()["vector_store"] = vs
+        
+        print("Models and vector store loaded successfully.")
+    except Exception as e:
+        print(f"Error loading models or vector store: {e}")
+        # Don't exit here, let the app start but maybe fail requests
+        
+    yield
+    # Clean up resources if needed
+    print("Shutting down...")
 
-    if retriever is None:
-        globals()["retriever"] = vector_store.as_retriever(search_kwargs={"k": 5})
-
-    # 4. RAG prompt & chain
-    template = """
-    You are an expert agricultural assistant specializing in coconut palm pests and diseases.
-    Your task is to provide a comprehensive and actionable recommendation for the user's query based ONLY on the following context.
-    Structure your answer clearly. If there are chemical, organic, and cultural practices, list them under separate headings.
-    If the information is not in the context, state that you do not have specific recommendations for that issue based on the provided data.
-    Do not make up information.
-
-    CONTEXT:
-    {context}
-
-    QUESTION:
-    {question}
-
-    ANSWER:
-    """
-    prompt = PromptTemplate.from_template(template)
-
-    globals()["rag_chain"] = (
-        {"context": retriever, "question": RunnablePassthrough()}
-        | prompt
-        | llm
-        | StrOutputParser()
-    )
-
-    # Chat chain
-    chat_template = """
-    You are Coco Chat, an expert and friendly agricultural assistant for smallholder coconut farmers.
-    Answer the user's question concisely and helpfully using plain language. If the question asks for a
-    recommendation and you can use the knowledge base for grounding, say so and provide actionable steps.
-    If the information is not available in the knowledge base, be honest and provide general best-practice guidance
-    or ask for clarification. Keep answers practical and safe.
-
-    User: {message}
-
-    Assistant:
-    """
-    chat_prompt = PromptTemplate.from_template(chat_template)
-
-    globals()["chat_chain"] = (
-        {"message": RunnablePassthrough()}
-        | chat_prompt
-        | llm
-        | StrOutputParser()
-    )
-
-    print("Models and vector store loaded successfully.")
-
-
-# --- 2. FASTAPI APP ---
-
+# Initialize FastAPI app
 app = FastAPI(
     title="Coconut Disease RAG API",
     description="An API to get recommendations for coconut diseases using a RAG system with Gemini.",
     version="1.0.0",
+    lifespan=lifespan
 )
 
+# CORS configuration - allow the local dev UI and emulator hosts to access this API.
+# In production tighten this to trusted origins only.
+# During development we allow all origins so preflight OPTIONS requests from
+# local frontends and mobile emulators are accepted. Tighten this in production.
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+    expose_headers=["*"],
+)
+
+
+# Generic catch-all OPTIONS route to make sure malformed or unusual preflight
+# requests still return a valid response. This is useful for debugging local
+# clients that sometimes send odd preflight headers and get 400 responses.
+from fastapi.responses import PlainTextResponse
+
+
+@app.options("/{rest_of_path:path}")
+async def _preflight_handler(rest_of_path: str):
+    # Return minimal headers — CORSMiddleware will also add the appropriate CORS
+    # headers, but responding explicitly here helps if some requests bypass
+    # typical middleware paths.
+    return PlainTextResponse("", status_code=200, headers={
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods": "GET,POST,PUT,DELETE,OPTIONS",
+        "Access-Control-Allow-Headers": "*",
+    })
 
 # Pydantic model for request body validation
 class QueryRequest(BaseModel):
     disease: str
-
 
 # Pydantic model for chat requests
 class ChatRequest(BaseModel):
     message: str
     use_knowledge: bool = True
 
-
-# --- 3. API ENDPOINTS ---
-
+# --- 3. API ENDPOINT ---
 @app.post("/get_recommendation")
 async def get_recommendation(request: QueryRequest):
     """
@@ -150,46 +156,44 @@ async def get_recommendation(request: QueryRequest):
     Example: {"disease": "My coconut leaves have yellow spots"}
     """
     try:
-        ensure_models_loaded()
-
         query = request.disease
         if not query:
             raise HTTPException(status_code=400, detail="The 'disease' field cannot be empty.")
-
+            
         print(f"Received query: {query}")
-
+        
+        # Invoke the RAG chain to get the response
         response = rag_chain.invoke(query)
-
+        
         print(f"Generated response: {response}")
 
         return {"recommendation": response}
 
-    except HTTPException:
-        raise
     except Exception as e:
         print(f"An error occurred: {e}")
         raise HTTPException(status_code=500, detail="An internal server error occurred.")
 
 
+# New Coco Chat endpoint
 @app.post("/coco_chat")
 async def coco_chat(request: ChatRequest):
     """
     Conversational chatbot endpoint named 'Coco Chat'.
     Request body: { "message": "...", "use_knowledge": true }
-    If use_knowledge is true (default), Coco Chat will attempt to ground answers using the
+    If `use_knowledge` is true (default), Coco Chat will attempt to ground answers using the
     project's knowledge base via the RAG chain. If false, it will answer directly using the LLM.
     """
     try:
-        ensure_models_loaded()
-
         if not request.message or not request.message.strip():
             raise HTTPException(status_code=400, detail="The 'message' field cannot be empty.")
 
         print(f"Coco Chat received: {request.message} (use_knowledge={request.use_knowledge})")
 
         if request.use_knowledge:
+            # Use RAG chain to provide grounded answer
             response = rag_chain.invoke(request.message)
         else:
+            # Use direct chat chain for general conversation
             response = chat_chain.invoke(request.message)
 
         print(f"Coco Chat response: {response}")
@@ -202,26 +206,7 @@ async def coco_chat(request: ChatRequest):
         print(f"An error occurred in Coco Chat: {e}")
         raise HTTPException(status_code=500, detail="An internal server error occurred.")
 
-
 # Health check endpoint
 @app.get("/")
 def read_root():
     return {"status": "API is running"}
-
-
-# --- 4. LOCAL / RENDER ENTRYPOINT ---
-
-if _name_ == "_main_":
-    import uvicorn
-
-    port_str = os.environ.get("PORT")
-    if port_str is None:
-        # Local dev fallback
-        print("Warning: PORT environment variable not set. Using 8000 for local development.")
-        port = 8000
-    else:
-        port = int(port_str)
-        print(f"Starting server on port: {port}")
-
-    # 'main:app' assumes this file is named main.py
-    uvicorn.run("main:app", host="0.0.0.0", port=port)
